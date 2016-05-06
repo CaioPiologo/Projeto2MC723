@@ -37,6 +37,31 @@ As configurações da cache L2 serão as seguintes:
 * Size: 128KB / Block: 64b
 * Size: 256KB / Block: 512b
 
+### Hazards:
+Hazards de pipeline se refere a uma situação na qual um programa para de funcionar corretamente por causa da implementação em um processador com pipeline. Tratar os harzards aumentam a complexidade do pipeline e reduzem a sua performance e o resolução eficiente desses hazards é torna o design de processadores difícil.
+
+
+Há três possíveis tipos de hazards:
+
+* Hazard estrutural: um mesmo componente de hardware é requisitado por diferentes estágios ao mesmo tempo
+* Hazard de controle: ocorre quando a próxima instrução não é conhecida
+* Hazards de dados: ocorre quando o input de uma instrução não está disponível para uso no ciclos que é necessário
+
+A solução para o hazard estrutural é adicionar mais componentes de hardware para poder atender todas as requisições ao mesmo tempo. Por exemplo, adicionar duas unidades de memória para atender pedidos de fetch de *instrução* e executar instruções de *lw* ou *sw* que fazem acesso a memória ao mesmo tempo.
+
+O problema de hazard de controle pode ser resolvidos com *branch prediction*, ele fará uma previsão de qual será a próxima instrução e indica para a próxima instrução para a unidade de *instruction fetch* se errar, há uma penalidade para buscar a instrução correta.
+
+O problema de hazard de dados se divide em três tipos:
+
+* Read After Write (RAW): um dado é escrito e logo em seguida ele é requerido para uma leitura desse dado, por exemplo add R1,_,_ seguido de sub _,R1,_. Neste caso a operação de sub estára usando um dado incorreto
+* Write After Read (WAR): um dado é lido e em seguida é escrito, pode ocorrer da escrita do dado ocorrer antes da sua leitura 
+* Write After Write (WAW): duas escritas em sequência podem inverter a ordem dos dados armazenados.
+
+
+#### Pipeline de 5 estágios
+
+No pipeline de 5 estágios com que vamos trabalhar, vamos supor que os hazard estrutural não ocorre. O hazards de controle vão ocorrer no caso de branchs, sendo resolvidos pelos *branch predictors* utilizados e o dos hazards de dados, apenas os casos de RAW, escrita seguido de leitura irá ocorrer. Também iremos considerar que o pipeline usa forwarding, logo o único hazards de dados que contabiliza *stalls* será um load seguido de operação aritimética.
+
 ### Roteiro dos experimentos :
 
 O roteiro vai partir de uma configuração inicial, para os processador MIPS, pipeline de 5 estágios, escalar, branch estático e melhor configuração de cache. A partir dessa configuração, usaremos os simuladores do MIPS e o software Dinero IV para variar estes parâmetros para avaliar a influência destes no desempenho do simulador, para isso faremos uma contagem de certos eventos.
