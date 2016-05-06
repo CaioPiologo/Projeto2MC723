@@ -53,7 +53,7 @@ O problema de hazard de controle pode ser resolvidos com *branch prediction*, el
 
 O problema de hazard de dados se divide em três tipos:
 
-* Read After Write (RAW): um dado é escrito e logo em seguida ele é requerido para uma leitura desse dado, por exemplo add R1,_,_ seguido de sub _,R1,_. Neste caso a operação de sub estára usando um dado incorreto
+* Read After Write (RAW): um dado é escrito e logo em seguida ele é requerido para uma leitura desse dado, por exemplo add R1,X,X seguido de sub X,R1,X. Neste caso a operação de sub estára usando um dado incorreto
 * Write After Read (WAR): um dado é lido e em seguida é escrito, pode ocorrer da escrita do dado ocorrer antes da sua leitura 
 * Write After Write (WAW): duas escritas em sequência podem inverter a ordem dos dados armazenados.
 
