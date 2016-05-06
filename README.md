@@ -41,11 +41,12 @@ As configurações da cache L2 serão as seguintes:
 Hazards de pipeline se refere a uma situação na qual um programa para de funcionar corretamente por causa da implementação em um processador com pipeline. Tratar os harzards aumentam a complexidade do pipeline e reduzem a sua performance e o resolução eficiente desses hazards é torna o design de processadores difícil.
 
 
-Há três possíveis tipos de hazards:
+Há quatro possíveis tipos de hazards:
 
 * Hazard estrutural: um mesmo componente de hardware é requisitado por diferentes estágios ao mesmo tempo
 * Hazard de controle: ocorre quando a próxima instrução não é conhecida
 * Hazards de dados: ocorre quando o input de uma instrução não está disponível para uso no ciclos que é necessário
+* Hazards de memória: ocorrem quando é necessário buscar informação na memória, operação muito custosa em relação a tempo
 
 A solução para o hazard estrutural é adicionar mais componentes de hardware para poder atender todas as requisições ao mesmo tempo. Por exemplo, adicionar duas unidades de memória para atender pedidos de fetch de *instrução* e executar instruções de *lw* ou *sw* que fazem acesso a memória ao mesmo tempo.
 
@@ -60,7 +61,7 @@ O problema de hazard de dados se divide em três tipos:
 
 #### Pipeline de 5 estágios
 
-No pipeline de 5 estágios com que vamos trabalhar, vamos supor que os hazard estrutural não ocorre. O hazards de controle vão ocorrer no caso de branchs, sendo resolvidos pelos *branch predictors* utilizados e o dos hazards de dados, apenas os casos de RAW, escrita seguido de leitura irá ocorrer. Também iremos considerar que o pipeline usa forwarding, logo o único hazards de dados que contabiliza *stalls* será um load seguido de operação aritimética.
+No pipeline de 5 estágios com que vamos trabalhar, vamos supor que os hazard estrutural não ocorre, pois há duas unidades de memória para instruções e de dados. O hazards de controle vão ocorrer no caso de branchs, sendo resolvidos pelos *branch predictors* utilizados e o dos hazards de dados, apenas os casos de RAW, escrita seguido de leitura irá ocorrer. Também iremos considerar que o pipeline usa forwarding, logo o único hazards de dados que contabiliza *stalls* será um load seguido de operação aritimética, para contar o número de stalls total iremos contabilizar as dependências das instruções no programas . Para o hazards de memória, irermos gerar os traces de memória para os programas do benchmark e rodar os traces no Dinero IV. Iremos contabilizar o número de *hits* e *misses* nas caches L1 e L2 e calcular quantos *stalls* são gerados.
 
 ### Roteiro dos experimentos :
 
