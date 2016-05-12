@@ -41,12 +41,14 @@ using namespace mips_parms;
 static int processors_started = 0;
 #define DEFAULT_STACK_SIZE (256*1024)
 
-FILE *f = NULL;
+//FILE *f = NULL;
 //!Generic instruction behavior method.
 void ac_behavior( instruction )
 { 
   dbg_printf("----- PC=%#x ----- %lld\n", (int) ac_pc, ac_instr_counter);
   
+  printf("2 %x\n", &ac_pc);
+  /*
   if(fwrite(2, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -63,7 +65,7 @@ void ac_behavior( instruction )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
-
+*/
    
   
   
@@ -82,13 +84,14 @@ void ac_behavior( Type_J ){}
 //!Behavior called before starting simulation
 void ac_behavior(begin)
 {
+	/*
 	f = fopen("DINERO", "w");
 	if (f == NULL){
 		printf("Houve um erro ao abrir o arquivo.\n");
 		return 1;
 	}
 	printf("Arquivo DINERO Criado com sucesso.\n");
-	
+	*/
 	
 	
 	
@@ -112,7 +115,7 @@ void ac_behavior(begin)
 void ac_behavior(end)
 {
   dbg_printf("@@@ end behavior @@@\n");
-  fclose(f);
+  //fclose(f);
 }
 
 
@@ -125,6 +128,8 @@ void ac_behavior( lb )
   RB[rt] = (ac_Sword)byte ;
   dbg_printf("Result = %#x\n", RB[rt]);
   
+  printf("0 %x\n", RB[rs]+ imm);
+  /*
   if(fwrite(0, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -141,6 +146,7 @@ void ac_behavior( lb )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */
 };
 
 //!Instruction lbu behavior method.
@@ -152,6 +158,8 @@ void ac_behavior( lbu )
   RB[rt] = byte ;
   dbg_printf("Result = %#x\n", RB[rt]);
   
+  printf("0 %x\n", RB[rs]+ imm);
+/*
   if(fwrite(0, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -168,6 +176,7 @@ void ac_behavior( lbu )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */
 };
 
 //!Instruction lh behavior method.
@@ -178,7 +187,8 @@ void ac_behavior( lh )
   half = DM.read_half(RB[rs]+ imm);
   RB[rt] = (ac_Sword)half ;
   dbg_printf("Result = %#x\n", RB[rt]);
-  
+  printf("0 %x\n", RB[rs]+ imm);
+/*
   if(fwrite(0, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -195,6 +205,7 @@ void ac_behavior( lh )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */ 
 };
 
 //!Instruction lhu behavior method.
@@ -204,7 +215,8 @@ void ac_behavior( lhu )
   half = DM.read_half(RB[rs]+ imm);
   RB[rt] = half ;
   dbg_printf("Result = %#x\n", RB[rt]);
-  
+  printf("0 %x\n", RB[rs]+ imm);
+/*
   if(fwrite(0, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -221,6 +233,7 @@ void ac_behavior( lhu )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */ 
 };
 
 //!Instruction lw behavior method.
@@ -229,7 +242,9 @@ void ac_behavior( lw )
   dbg_printf("lw r%d, %d(r%d)\n", rt, imm & 0xFFFF, rs);
   RB[rt] = DM.read(RB[rs]+ imm);
   dbg_printf("Result = %#x\n", RB[rt]);
-  
+
+  printf("0 %x\n", RB[rs]+ imm);
+/*  
   if(fwrite(0, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -246,6 +261,7 @@ void ac_behavior( lw )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */ 
 };
 
 //!Instruction lwl behavior method.
@@ -262,7 +278,8 @@ void ac_behavior( lwl ) //check later
   data |= RB[rt] & ((1<<offset)-1);
   RB[rt] = data;
   dbg_printf("Result = %#x\n", RB[rt]);
-  
+  printf("0 %x\n", addr & 0xFFFFFFFC);
+/*
   if(fwrite(0, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -279,6 +296,7 @@ void ac_behavior( lwl ) //check later
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */ 
 };
 
 //!Instruction lwr behavior method.
@@ -296,6 +314,9 @@ void ac_behavior( lwr ) //check later
   RB[rt] = data;
   dbg_printf("Result = %#x\n", RB[rt]);
   
+    printf("0 %x\n", addr & 0xFFFFFFFC);
+
+  /*
   if(fwrite(0, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -312,6 +333,7 @@ void ac_behavior( lwr ) //check later
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */ 
 };
 
 //!Instruction sb behavior method.
@@ -323,6 +345,8 @@ void ac_behavior( sb )
   DM.write_byte(RB[rs] + imm, byte);
   dbg_printf("Result = %#x\n", (int) byte);
   
+  printf("1 %x\n", RB[rs] + imm);
+/*
   if(fwrite(1, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -339,6 +363,7 @@ void ac_behavior( sb )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */
 };
 
 //!Instruction sh behavior method.
@@ -349,7 +374,8 @@ void ac_behavior( sh )
   half = RB[rt] & 0xFFFF;
   DM.write_half(RB[rs] + imm, half);
   dbg_printf("Result = %#x\n", (int) half);
-   
+  printf("1 %x\n", RB[rs] + imm);
+ /*
   if(fwrite(1, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -366,6 +392,7 @@ void ac_behavior( sh )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */ 
 };
 
 //!Instruction sw behavior method.
@@ -374,7 +401,8 @@ void ac_behavior( sw )
   dbg_printf("sw r%d, %d(r%d)\n", rt, imm & 0xFFFF, rs);
   DM.write(RB[rs] + imm, RB[rt]);
   dbg_printf("Result = %#x\n", RB[rt]);
-  
+  printf("1 %x\n", RB[rs] + imm);
+/*
    if(fwrite(1, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -391,6 +419,7 @@ void ac_behavior( sw )
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */ 
 };
 
 //!Instruction swl behavior method.
@@ -407,7 +436,8 @@ void ac_behavior( swl ) //check later
   data |= DM.read(addr & 0xFFFFFFFC) & (0xFFFFFFFF << (32-offset));
   DM.write(addr & 0xFFFFFFFC, data);
   dbg_printf("Result = %#x\n", data);
-  
+  printf("1 %x\n", addr & 0xFFFFFFFC);
+/*
    if(fwrite(1, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -424,6 +454,7 @@ void ac_behavior( swl ) //check later
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */ 
 };
 
 //!Instruction swr behavior method.
@@ -440,7 +471,8 @@ void ac_behavior( swr ) //check later
   data |= DM.read(addr & 0xFFFFFFFC) & ((1<<offset)-1);
   DM.write(addr & 0xFFFFFFFC, data);
   dbg_printf("Result = %#x\n", data);
-  
+  printf("1 %x\n", addr & 0xFFFFFFFC);
+ /*
    if(fwrite(1, sizeof(int), 1, f) != 1)
   {
 	  printf("Erro na escrita do instruction fetch label\n");
@@ -457,6 +489,7 @@ void ac_behavior( swr ) //check later
 	  printf("Erro da escrita do '\n'. \n");
 	  exit(1);
   }
+  */
 };
 
 //!Instruction addi behavior method.
