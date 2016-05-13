@@ -47,7 +47,8 @@ void ac_behavior( instruction )
 { 
   dbg_printf("----- PC=%#x ----- %lld\n", (int) ac_pc, ac_instr_counter);
   
-  printf("2 %x\n", (int) ac_pc);
+  fprintf(f,"2 %x\n", (int) ac_pc);
+  //printf("2 %x\n", (int) ac_pc);
   /*
   if(fwrite(2, sizeof(int), 1, f) != 1)
   {
@@ -85,7 +86,7 @@ void ac_behavior( Type_J ){}
 void ac_behavior(begin)
 {
 	
-	f = fopen("/tmp/DINERO", "w");
+	f = fopen("/tmp/DINERO.txt", "w");
 	if (f == NULL){
 		printf("Houve um erro ao abrir o arquivo.\n");
 		return 1;
