@@ -86,10 +86,9 @@ void ac_behavior( Type_J ){}
 void ac_behavior(begin)
 {
 	
-	f = fopen("/tmp/DINERO.txt", "w");
+	f = fopen("/home/staff/lucas/tmp-lab/DINERO.txt", "w");
 	if (f == NULL){
 		printf("Houve um erro ao abrir o arquivo.\n");
-		return 1;
 	}
 	//printf("Arquivo DINERO Criado com sucesso.\n");
 	
