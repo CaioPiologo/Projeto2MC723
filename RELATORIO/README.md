@@ -74,7 +74,7 @@ Dessa forma, o *branch prediction* foi desenvolvido de forma a atenuar as perdas
 - **Branch Dinâmico**: Assim como o *branch estático*, ele irá assumir um *PC* para o qual o fluxo será transferido, porém este valor irá depender de como o fluxo do programa está sendo realizado e será modificado ao longo do mesmo.
   - Por exemplo, o *branch predictor* de 1 bit age similarmente ao *branch estático*, no entanto, ao errar um desvio de fluxo ele irá assumir que os próximos *branchs* também irão errar, ou seja, o fluxo não será desviado para o *PC* do chute mas sim para o próximo *PC*. E da mesma forma, quando acertar ele irá assumir que irá continuar acertando o desvio da predição. 
 
-#####Branch Estático
+####Branch Estático
 
 O código [mips_isa.cpp](../branchPrediction/mips_isa_estatico.cpp "Static Branch Predictor") foi modificado de forma a armazenar o pc da última posição de branch e sempre assumir que o próximo branch será realizado para esta posição, como descrito anteriormente. Caso não seja, será considerado que um hazard ocorrerá no pipeline e uma nova posição será armazenada.
 Executando os benchmarks a seguir, obtivemos os seguintes resultados:
@@ -90,7 +90,7 @@ Executando os benchmarks a seguir, obtivemos os seguintes resultados:
 
 Como pode-se perceber, os resultados possuiram uma média de erros de predição entre 10~70%. A alta variação entre número de misses pode ter ocorrido devido ao fato de o código possuir muitos saltos diferentes, raramente repetindo a mesma posição saltada.
 
-######Branch Dinâmico
+####Branch Dinâmico
 Dentre os branchs dinâmicos existentes foi selecionado para o caso o branch prediction de 1 bit. Dessa forma, foi modificado o código [mips_isa.cpp](../branchPrediction/mips_isa_dinamico.cpp "Dynamic Branch Prediction") de forma a fazer o descrito anteriormente, obtendo os seguintes valores para os benchmarks:
 
 | Benchmark     	| Instruções    | Branches        | Branch Mispredictions | Misses Percentag	|
