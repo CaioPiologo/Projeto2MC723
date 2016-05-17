@@ -59,7 +59,7 @@ O problema de hazard de dados se divide em três tipos:
 
 Os hazards de memória são resolvidos com a implementação de caches, que são unidades de memória mais rápidas que reduzem o tempo médio para acessar dados na memória principal. As caches estão organizadas em uma hierarquia de níveis, quanto menor a cache, mais rápido é o seu acesso e quanto maior a sua capacidade, mais lento é o acesso.
 
-Para as simulações realizados no projeto, consideramos que hazard estrutural não ocorre, visto que há duas unidades de memória para acessar instruções e dados separadamente. Hazard de controle são influênciados pelo *branch predictor* escolhido na configuração da simulação. O hazards de dados dependem do tamanho do pipeline ou se é supereescalar ou escalar, mas sempre consideramos há fowarding. Hazard de dados vão depender da configuração de cache escolhida.
+Para as simulações realizados no projeto, consideramos que hazard estrutural não ocorre, visto que há duas unidades de memória para acessar instruções e dados separadamente. Hazard de controle são influênciados pelo *branch predictor* escolhido na configuração da simulação. O hazards de dados dependem do tamanho do pipeline ou se é supereescalar ou escalar, mas sempre consideramos que há fowarding. Hazard de dados vão depender da configuração de cache escolhida.
 
 
 #####Pipeline Escalar de 5 estágios
@@ -72,11 +72,11 @@ As ações de *branch* em códigos tendem a sempre criar bolhas no pipeline de e
 Dessa forma, o *branch prediction* foi desenvolvido de forma a atenuar as perdas de cada branch de forma a tentar prever para qual *PC* o fluxo será desviado. Para o projeto foram usados os dois seguintes tipos:
 - **Branch Estático**: Assume que a posição de "chute" para o próximo *PC* estará sempre correta, e assim carrega no pipeline as posições referentes a este *PC*. Caso acerte, o fluxo se dará normalmente sem bolhas, caso contrário irá descartar as instruções carregadas pelo chute e transferir o fluxo como se tivesse apenas executado um *branch* sem *branch prediction*
 - **Branch Dinâmico**: Assim como o *branch estático*, ele irá assumir um *PC* para o qual o fluxo será transferido, porém este valor irá depender de como o fluxo do programa está sendo realizado e será modificado ao longo do mesmo.
-⋅⋅⋅ 
+  - Por exemplo, o *branch predictor* de 1 bit age similarmente ao *branch estático*, no entanto, ao errar um desvio de fluxo ele irá assumir que os próximos *branchs* também irão errar, ou seja, o fluxo não será desviado para o *PC* do chute mas sim para o próximo *PC*. E da mesma forma, quando acertar ele irá assumir que irá continuar acertando o desvio da predição. 
 
 #####Branch Estático
 
-O código [mips_isa.cpp](../branchPrediction/mips_isa_estatico.cpp "Static Branch Predictor") foi modificado de forma a armazenar o pc da última posição de branch e sempre assumir que o próximo branch será realizado para esta posição. Caso não seja, será considerado que um hazard ocorrerá no pipeline e uma nova posição será armazenada.
+O código [mips_isa.cpp](../branchPrediction/mips_isa_estatico.cpp "Static Branch Predictor") foi modificado de forma a armazenar o pc da última posição de branch e sempre assumir que o próximo branch será realizado para esta posição, como descrito anteriormente. Caso não seja, será considerado que um hazard ocorrerá no pipeline e uma nova posição será armazenada.
 Executando os benchmarks a seguir, obtivemos os seguintes resultados:
 
 | Benchmark         | Instruções  | Branches    | Branch Mispredictions | Misses Percentage |
@@ -88,19 +88,21 @@ Executando os benchmarks a seguir, obtivemos os seguintes resultados:
 | JPEG (encode)     | 111543858	  | 13528023	  | 6910492		            | 51.1%		          |
 | JPEG (decode)     | 35847190	  | 1816631	    | 222811		            | 12.3%		          |
 
-	Como pode-se perceber, os resultados possuiram uma média de erros de predição entre 10~70%. A alta variação entre número de misses pode ter ocorrido devido ao fato de o código possuir muitos saltos diferentes, raramente repetindo a mesma posição saltada.
+Como pode-se perceber, os resultados possuiram uma média de erros de predição entre 10~70%. A alta variação entre número de misses pode ter ocorrido devido ao fato de o código possuir muitos saltos diferentes, raramente repetindo a mesma posição saltada.
 
 ######Branch Dinâmico
-	Dentre os branchs dinâmicos existentes foi selecionado para o caso o branch prediction de 1 bit, ou seja, toda vez que for feita uma predição errada será assumido que o código continuará errando, e toda vez que for feita uma predição correta será assumido que o código continuará acertando.
-	Dessa forma, foi modificado o código mips_isa.cpp de forma a fazer o descrito acima, obtendo os seguintes valores:
-| Benchmark     | Instruções    | Branches         | Branch Mispredictions | Misses Percentage |
-| -------------------|:----------------:|--------------------:| ----------------------------:| -------------------------:|
-| Bitcount	 | 536894310	| 117341166	  | 6750164		     | 5.8%		   |
-| Dijkstra	 | 223691867	| 51329314	  | 153864		     | 0.3%		   |
-| Rijndael (encode) | 453563104	| 15040294	  | 412354	     | 2.7% 		   |
-| JPEG (decode) | 35848023	| 1816631	  | 58818		     | 3.2%		   |
+Dentre os branchs dinâmicos existentes foi selecionado para o caso o branch prediction de 1 bit. Dessa forma, foi modificado o código [mips_isa.cpp](../branchPrediction/mips_isa_dinamico.cpp "Dynamic Branch Prediction") de forma a fazer o descrito anteriormente, obtendo os seguintes valores para os benchmarks:
 
-	Percebe-se que os resultados possuem uma média de erros de predição entre 0~10%, como esperado de um branch predictor dinâmico. 
+| Benchmark     	| Instruções    | Branches        | Branch Mispredictions | Misses Percentag	|
+| ----------------------|:-------------:|----------------:| ---------------------:| -------------------:|
+| Bitcount		| 536894310	| 117341166	  | 6750164		  | 5.8%		|
+| Dijkstra		| 223691867	| 51329314	  | 153864		  | 0.3%		|
+| Rijndael (encode) 	| 453563104	| 15040294	  | 412354	     	  | 2.7% 		|
+| Rijndael (decode) 	| 483868969	| 16654333	  | 405998	     	  | 2.4% 		|
+| JPEG (encode) 	| 111543858	| 13528023	  | 287842		  | 2.1%		|
+| JPEG (decode) 	| 35848023	| 1816631	  | 58818		  | 3.2%		|
+
+Percebe-se que os resultados possuem uma média de erros de predição entre 0~10%, como esperado de um branch predictor dinâmico. 
 
 
 ##Referências
