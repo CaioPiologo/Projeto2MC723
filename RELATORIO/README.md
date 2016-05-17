@@ -66,6 +66,21 @@ Para as simulações realizados no projeto, consideramos que hazard estrutural n
 Para o pipeline de 5 estágios hazards de WAW e WAR são resolvidos pelo fowarding ou não ocorrem, logo, o único hazard que devemos considerar é o RAW, normalmente são necessários dois stalls para resolvê-lo, no entanto devido ao fowarding um *stall* é suficiente.
 Para detectar o hazard, o **hazard detector** verifica se a instrução entre os estágios de **instruction decoding (ID)** e **execute (EX)** faz um acesso a memória e se o registrador onde o valor é armazenado vai ser lido entre  o estágio de **instruction fetch (IF)** e **ID**, se isto ocorre, uma bolha é inserida.
 
+Os resultados para os benchmarks estão apresentados a seguir:
+
+| Benchmark     | Instruções    | Data Stalls         |
+| -------------------|:----------------:|--------------------:|
+| Bitcount	 | 511004870	| 8170	  |
+| Dijkstra	 | 181060823	| 30155599	  |
+| Rijndael (encode) | 420492338	| 21916061	  |
+| Rijndael (decode) | 441097079	| 29800097	  |
+| JPEG (encode) | 102672414	| 5610850	  |
+| JPEG (decode) | 32161693	| 2892153	  |
+
+
+#####Pipeline Superescalar
+Para aumentar o desempenho do processador, é possível duplicar os estágios do pipeline para que o processador execute mais instruções em paralelo. Em um processador superescalar ideal, com uma replicação de pipeline o CPI de um processador cai pela metade, pois há o dobro de instruções sendo executadas por ciclo. No entanto, o pipeline se torna mais complexo e outros problemas de hazards ocorrem.
+
 ##Branch Prediction
 
 As ações de *branch* em códigos tendem a sempre criar bolhas no pipeline de execução se não tratadas, uma vez que o pipeline acredita que irá apenas mover seu *PC* para a próxima posição e por conta disso carrega as instruções de *PCs* seguintes nos estágios iniciais do pipeline, até analisar a instrução atual e verificar que se trata de um *branch*, tendo que descartar as instruções carregadas nos estágios anteriores.
