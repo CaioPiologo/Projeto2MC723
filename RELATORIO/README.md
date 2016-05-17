@@ -42,7 +42,7 @@ Hazards ocorrem no pipeline devido a divisão em estágios do processamento de i
 Há quatro tipos de hazards:
 
 * Hazard estrutural: um mesmo componente de hardware é requisitado por diferentes estágios ao mesmo tempo
-* Hazard de controle: ocorre quando a próxima instrução não é conhecida
+* Hazard de controle: ocorre quando a próxima instrução não é conhecida ou há desvio de fluxo
 * Hazards de dados: ocorre quando o input de uma instrução não está disponível para uso no ciclo em que o dado é necessário
 * Hazards de memória: ocorrem quando é necessário buscar informação na memória, operação muito custosa em relação a tempo
 
