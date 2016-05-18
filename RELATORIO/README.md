@@ -118,7 +118,167 @@ Dentre os branchs dinâmicos existentes foi selecionado para o caso o branch pre
 | JPEG (decode) 	| 35848023	| 1816631	  | 58818		  | 3.2%		|
 
 Percebe-se que os resultados possuem uma média de erros de predição entre 0~10%, como esperado de um branch predictor dinâmico. 
+##Tabelas finais
 
+
+####Cofiguração 1:
+
+ - Pipeline de 5 estágios
+ - Processador escalar
+ - Tamanho L1 dados: 8KB
+ - Tamanho L1 instrução: 8KB
+ - Tamanho L2 unificada: 128KB
+ - Bloco L1 dados: 64B
+ - Bloco L1 instruções: 64B
+ - Bloco L2 unificada: 64B
+ - Sem branch prediction
+
+| 		| Bitcount	| Dijkstra	| Rijndael(encode)| Rijndael(decode)| JPEG(encode)| JPEG(decode)	|
+| :------------ |:------------: | :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
+| Total instruções | 536894239	| 223690592	| 453556707	| 483862590	| 111543017	| 35847192	|
+| Miss rate L1 dados| 0.00%	| 2.92%		| 23.91%	| 22.35%	| 2.23%		| 2.33%		|
+| Miss rate L1 instruções| 0.00%| 0.20%		| 3.88%		| 4.14%		| 0.04%		| 0.09%		|
+| Miss rate L2     | 17.30%	| 0.80%		| 17.97%	| 13.89%	| 19.10%		| 3.04%		|
+| Stalls por branch| 100.0%	| 100.0%	| 100.0%	| 100.0%	| 100.0%		| 100.0%	|
+| Stalls por dados |  0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
+| Total ciclos	   |  771588925 | 361294184	| 682386397	| 717429446	| 147800555	| 43171316	|
+| Tempo de execução| 771,59 s	| 361,29 s	| 682,39 s	| 717,43 s	| 147,80 s	| 43,17 s	|
+
+
+----------
+
+
+####Cofiguração 2:
+
+ - Pipeline de 5 estágios
+ - Processador escalar
+ - Tamanho L1 dados: 64KB
+ - Tamanho L1 instrução: 64KB
+ - Tamanho L2 unificada: 128KB
+ - Bloco L1 dados: 512B
+ - Bloco L1 instruções: 512B
+ - Bloco L2 unificada: 64B
+ - Sem branch prediction
+
+| 		| Bitcount	| Dijkstra	| Rijndael(encode)| Rijndael(decode)| JPEG(encode)	| JPEG(decode)	|
+| :------------ |:------------: | :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
+| Total instruções | 536894239	| 223690592	| 453556707	| 483862590	| 111543017	| 35847192	|
+| Miss rate L1 dados| 0.00%	| 0.03%		| 18.12%	| 16.32%	| 0.75%		| 0.38%		|
+| Miss rate L1 instruções| 0.00%| 0.00%		| 0.36%		| 0.00%		| 0.00%		| 0.01%		|
+| Miss rate L2     | 63.50%	| 17.46%	| 82.22%	| 74.51%	| 74.19%		| 62.18%	|
+| Stalls por branch| 100.0%	| 100.0%	| 100.0%	| 100.0%	| 100.0%		| 100.0%	|
+| Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
+| Total ciclos	   | 771596792	| 356883288	| 1824438875	| 2106034464	| 161167477	| 44893624	|
+| Tempo de execução| 771,60 s	| 356,88 s	| 1824,44 s	| 2106,03 s	| 161,17 s	| 44,89 s	|
+
+
+----------
+
+
+####Cofiguração 3:
+
+ - Pipeline de 5 estágios
+ - Processador escalar
+ - Tamanho L1 dados: 8KB
+ - Tamanho L1 instrução: 8KB
+ - Tamanho L2 unificada: 256KB
+ - Bloco L1 dados: 64B
+ - Bloco L1 instruções: 64B
+ - Bloco L2 unificada: 512B
+ - Sem branch prediction
+
+| 		| Bitcount	| Dijkstra	| Rijndael(encode)| Rijndael(decode)| JPEG(encode)	|JPEG(decode)	|
+| :------------ |:------------: | :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
+| Total instruções | 536894239	| 223690592	| 453556707	| 483862590	| 111543017	| 35847192	|
+| Miss rate L1 dados| 0.00%	| 2.92%		| 23.91%	| 22.35%	| 2.23%		| 2.33%		|
+| Miss rate L1 instruções| 0.00%| 0.20%		| 3.88%		| 4.14%		| 0.04%		| 0.09%		|
+| Miss rate L2     | 6.44%	| 0.11%		| 30.35%	| 22.96%	| 13.97%		| 3.46%		|
+| Stalls por branch| 100.0%	| 100.0%	| 100.0%	| 100.0%	| 100.0%		| 100.0%	|
+| Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
+| Total ciclos	   | 771586316	| 361125356	| 716980968	| 781119124	| 147302282	| 43188828	|
+| Tempo de execução| 771,59 s	| 361,13 s	| 716,98 s	| 781,12 s	| 147,30 s	| 43,19 s	|
+
+
+----------
+
+
+####Cofiguração 4:
+
+ - Pipeline de 5 estágios
+ - Processador escalar
+ - Tamanho L1 dados: 64KB
+ - Tamanho L1 instrução: 64KB
+ - Tamanho L2 unificada: 256KB
+ - Bloco L1 dados: 512B
+ - Bloco L1 instruções: 512B
+ - Bloco L2 unificada: 512B
+ - Sem branch prediction
+
+| 		| Bitcount	| Dijkstra	| Rijndael(encode)| Rijndael(decode)| JPEG(encode)	|JPEG(decode)	|
+| :------------ |:------------: | :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
+| Total instruções | 536894239	| 223690592	| 453556707	| 483862590	| 111543017	| 35847192	|
+| Miss rate L1 dados| 0.00%	| 0.03%		| 18.12%	| 16.32%	| 0.75%		| 0.38%		|
+| Miss rate L1 instruções| 0.00%| 0.00%		| 0.36%		| 0.00%		| 0.00%		| 0.01%		|
+| Miss rate L2     | 61.60%	| 9.36%		| 56.74%	| 47.72%	| 57.98%		| 36.99%		|
+| Stalls por branch| 100.0%	| 100.0%	| 100.0%	| 100.0%	| 100.0%		| 100.0%	|
+| Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
+| Total ciclos	   | 771586226	| 356565661	| 653990644	| 727489633	| 146366555	| 42658406	|
+| Tempo de execução| 771,59 s	| 356,57 s	| 653,99 s	| 727,49 s	| 146,37 s	| 42,66 s	|
+
+
+----------
+
+
+####Configuração 5:
+
+ - Pipeline de 5 estágios
+ - Processador escalar
+ - Tamanho L1 dados: 64KB
+ - Tamanho L1 instrução: 64KB
+ - Tamanho L2 unificada: 256KB
+ - Bloco L1 dados: 512B
+ - Bloco L1 instruções: 512B
+ - Bloco L2 unificada: 512B
+ - Branch prediction estático
+
+| 		| Bitcount	| Dijkstra	| Rijndael(encode)| Rijndael(decode)| JPEG(encode)	|JPEG(decode)	|
+| :------------ |:------------: | :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
+| Total instruções | 536894266	| 223690619	| 453556705	| 483868969	| 111543858	| 35847190	|
+| Miss rate L1 dados| 0.00%	| 0.03%		| 18.12%	| 16.32%	| 0.75%		| 0.38%		|
+| Miss rate L1 instruções| 0.00%| 0.00%		| 0.36%		| 0.00%		| 0.00%		| 0.01%		|
+| Miss rate L2     | 61.60%	| 9.36%		| 56.74%	| 47.72%	| 57.98%		| 36.99%		|
+| Stalls por branch| 24.0% 	| 35.6%		| 68.7%		| 59.6%		| 51.1%		| 12.3%		|
+| Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
+| Total ciclos	   | 593165646	| 290450787	| 644583142	| 714029171	| 133131493	| 39470766	|
+| Tempo de execução| 593,17 s	| 290,45 s	| 644,58 s	| 714,03 s	| 133,13 s	| 39,47 s	|
+
+
+----------
+
+
+####Configuração 6:
+
+ - Pipeline de 5 estágios
+ - Processador escalar
+ - Tamanho L1 dados: 64KB
+ - Tamanho L1 instrução: 64KB
+ - Tamanho L2 unificada: 256KB
+ - Bloco L1 dados: 512B
+ - Bloco L1 instruções: 512B
+ - Bloco L2 unificada: 512B
+ - Branch prediction dinâmico
+
+| 		| Bitcount	| Dijkstra	| Rijndael(encode)| Rijndael(decode)| JPEG(encode)	|JPEG(decode)	|
+| :------------ |:------------: | :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
+| Total instruções | 536894310	| 223691867	| 453563104	| 483868969	| 111543858	| 35848023	|
+| Miss rate L1 dados| 0.00%	| 0.03%		| 18.12%	| 16.32%	| 0.75%		| 0.38%		|
+| Miss rate L1 instruções| 0.00%| 0.00%		| 0.36%		| 0.00%		| 0.00%		| 0.01%		|
+| Miss rate L2     | 61.60%	| 9.36%		| 56.74%	| 47.72%	| 57.98%		| 36.99%		|
+| Stalls por branch| 24.0% 	| 35.6%		| 68.7%		| 59.6%		| 51.1%		| 12.3%		|
+| Stalls por branch| 5.8%	| 0.3%		| 2.7%		| 2.4%		| 2.1%		| 3.2%		|
+| Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
+| Total ciclos	   | 550404352	| 254216016	| 624734764	| 694992963	| 119886193	| 39142780	|
+| Tempo de execução| 550,40 s	| 254,21 s	| 624,73 s	| 694,99 s	| 119,89 s	| 39,14 s	|
 
 ##Referências
 [1] http://www.hardware.com.br/dicas/entendendo-cache.html 
