@@ -274,7 +274,6 @@ Percebe-se que os resultados possuem uma média de erros de predição entre 0~1
 | Miss rate L1 dados| 0.00%	| 0.03%		| 18.12%	| 16.32%	| 0.75%		| 0.38%		|
 | Miss rate L1 instruções| 0.00%| 0.00%		| 0.36%		| 0.00%		| 0.00%		| 0.01%		|
 | Miss rate L2     | 61.60%	| 9.36%		| 56.74%	| 47.72%	| 57.98%		| 36.99%		|
-| Stalls por branch| 24.0% 	| 35.6%		| 68.7%		| 59.6%		| 51.1%		| 12.3%		|
 | Stalls por branch| 5.8%	| 0.3%		| 2.7%		| 2.4%		| 2.1%		| 3.2%		|
 | Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
 | Total ciclos	   | 550404352	| 254216016	| 624734764	| 694992963	| 119886193	| 39142780	|
