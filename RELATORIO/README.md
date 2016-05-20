@@ -64,11 +64,11 @@ Para as simulações realizados no projeto, consideramos que hazard estrutural n
 
 #####Pipeline Escalar de 5 estágios
 Para o pipeline de 5 estágios hazards de WAW e WAR são resolvidos pelo fowarding ou não ocorrem, logo, o único hazard que devemos considerar é o RAW, normalmente são necessários dois stalls para resolvê-lo, no entanto devido ao fowarding um *stall* é suficiente.
-Para detectar o hazard, o **hazard detector** verifica se a instrução entre os estágios de **instruction decoding (ID)** e **execute (EX)** faz um acesso a memória e se o registrador onde o valor é armazenado vai ser lido entre  o estágio de **instruction fetch (IF)** e **ID**, se isto ocorre, uma bolha é inserida.
+Para detectar o hazard, o **hazard detector** verifica se a instrução entre os estágios de **instruction decoding (ID)** e **execute (EX)** faz um acesso a memória e se o registrador onde o valor é armazenado vai ser lido entre  o estágio de **instruction fetch (IF)** e **ID**, se isto ocorre, uma bolha é inserida. O hazard detector foi implementado em [mips_isa_escalar.cpp](../data_hazard/mips_isa_escalar.cpp).
 
 Os resultados para os benchmarks estão apresentados a seguir:
 
-| Benchmark     | Instruções    | Data Stalls         |
+| Benchmark     | Ciclos    | Data Stalls         |
 | -------------------|:----------------:|--------------------:|
 | Bitcount	 | 511004870	| 8170	  |
 | Dijkstra	 | 181060823	| 30155599	  |
@@ -80,6 +80,23 @@ Os resultados para os benchmarks estão apresentados a seguir:
 
 #####Pipeline Superescalar
 Para aumentar o desempenho do processador, é possível duplicar os estágios do pipeline para que o processador execute mais instruções em paralelo. Em um processador superescalar ideal, com uma replicação de pipeline o CPI de um processador cai pela metade, pois há o dobro de instruções sendo executadas por ciclo. No entanto, o pipeline se torna mais complexo e outros problemas de hazards ocorrem.
+ O pipeline superescalar implementado em [mips_isa_superescalar.cpp](../data_hazard/mips_isa_superescalar.cpp) é o descrito no livro do Patterson e Hennessy[2], onde há dois pipelines, podendo então duas instruções serem executadas no mesmo estágio. Mas em um pipeline, apenas são aceitas instruções aritiméticas e de branch e no outro são executadas instruções de load e store. O novo pipeline pode ser construido a partir da modificação do pipeline de cinco estágio usual, a cada ciclo, duas instruções são buscadas e decodificadas na memória nos estágios do *fetch* e *decoding*, então mais uma ALU é adicionada no estágio EX para que seja possível realizar operações aritiméticas e ao mesmo tempo realizar calculos de endereço para instruções de load e store.
+
+A nova configuração do processador faz com que novos hazards apareçam, o hazard causado pelo load se mantem, mas agora a dependência do load pode ocorrer com uma instrução que está no mesmo estágio que o load, então deve ser gerado um stall de duas bubbles para resolver o hazard. Outro problema ocorre com a dependência do resultado de uma operação aritimética, se uma operação de load ou store precisa deste resultado para calcular o endereço, é necessário gerar um stall para que o endereço seja calculado corretamente. 
+
+Os resultados para os benchmarks estão apresentados a seguir:
+
+| Benchmark     | Ciclos    | Data Stalls         |
+| -------------------|:----------------:|--------------------:|
+| Bitcount	 | 482864335	| 15778283	  |
+| Dijkstra	 | 129641625	| 70925848	  |
+| Rijndael (encode) | 342272216	| 75048164	  |
+| Rijndael (decode) | 111294148	| 105984811	  |
+| JPEG (encode) | 73682627	| 34104664	  |
+| JPEG (decode) | 21784657	| 14492166	  |
+
+Podemos ver que o número de ciclos cai em relação ao pipeline escalar, no melhor dos casos a contagem de ciclos é a metade no pipeline superescalar. No entanto, o número de stalls aumentou muito, na maioria das vezes o número de stalls dobrou e aumento de stalls é causado pelo aumento de hazards, pois o pipeline ficou mais complexo. Outra razão é o fato do pipeline superescalar ser estático, então as instruções são inseridas no pipeline na ordem em que estão na memória, um pipeline dinámico que alterá a ordem das instruções teria um número de stalls mais reduzido.
+
 
 ##Branch Prediction
 
@@ -118,6 +135,12 @@ Dentre os branchs dinâmicos existentes foi selecionado para o caso o branch pre
 | JPEG (decode) 	| 35848023	| 1816631	  | 58818		  | 3.2%		|
 
 Percebe-se que os resultados possuem uma média de erros de predição entre 0~10%, como esperado de um branch predictor dinâmico. 
+
+
+### Clock
+
+Para a parte final do projeto, fizemos a contagem total de ciclos de cada programa nas diferentes configurações propostas e é necessário achar o clock de cada configuração para calcular o tempo execução dos programas. Para isso foi feita uma análise de processadores MIPS existentes de configuração semelhante com as propostas aqui. O [R4300i](https://en.wikipedia.org/wiki/R4200#R4300i) é um processador de 5 estágios escalar anunciado em 1995, que possuia frequência de 133 MHz, que equivale a um clock de 7.5 ns. O [R5000](https://en.wikipedia.org/wiki/R5000) é um processador de 5 estágios superescalar com duas linhas de pipeline, a configuração é um pouco diferente da proposta aqui, o tipo de instruções que podem rodar simultaneamente são diferentes, mas este é o processador que mais se aproxima ao nosso. Possui frequência de 200MHz, que equivale a um clock de 5 ns.
+
 ##Tabelas finais
 
 
@@ -142,7 +165,7 @@ Percebe-se que os resultados possuem uma média de erros de predição entre 0~1
 | Stalls por branch| 100.0%	| 100.0%	| 100.0%	| 100.0%	| 100.0%		| 100.0%	|
 | Stalls por dados |  0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
 | Total ciclos	   |  771588925 | 361294184	| 682386397	| 717429446	| 147800555	| 43171316	|
-| Tempo de execução| 771,59 s	| 361,29 s	| 682,39 s	| 717,43 s	| 147,80 s	| 43,17 s	|
+| Tempo de execução| 5.79 s	| 2.71 s	| 5.12 s	| 5.38 s	| 1.11 s	| 0.32 s	|
 
 
 ----------
@@ -169,7 +192,7 @@ Percebe-se que os resultados possuem uma média de erros de predição entre 0~1
 | Stalls por branch| 100.0%	| 100.0%	| 100.0%	| 100.0%	| 100.0%		| 100.0%	|
 | Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
 | Total ciclos	   | 771596792	| 356883288	| 1824438875	| 2106034464	| 161167477	| 44893624	|
-| Tempo de execução| 771,60 s	| 356,88 s	| 1824,44 s	| 2106,03 s	| 161,17 s	| 44,89 s	|
+| Tempo de execução| 5.79 s |  2.68 s |  13.68 s |  15.80 s |  1.21 s |  0.34 s |
 
 
 ----------
@@ -196,7 +219,7 @@ Percebe-se que os resultados possuem uma média de erros de predição entre 0~1
 | Stalls por branch| 100.0%	| 100.0%	| 100.0%	| 100.0%	| 100.0%		| 100.0%	|
 | Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
 | Total ciclos	   | 771586316	| 361125356	| 716980968	| 781119124	| 147302282	| 43188828	|
-| Tempo de execução| 771,59 s	| 361,13 s	| 716,98 s	| 781,12 s	| 147,30 s	| 43,19 s	|
+| Tempo de execução| 5.79 s |  2.71 s |  5.38 s |  5.86 s |  1.10 s |  0.32 s |
 
 
 ----------
@@ -223,7 +246,7 @@ Percebe-se que os resultados possuem uma média de erros de predição entre 0~1
 | Stalls por branch| 100.0%	| 100.0%	| 100.0%	| 100.0%	| 100.0%		| 100.0%	|
 | Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
 | Total ciclos	   | 771586226	| 356565661	| 653990644	| 727489633	| 146366555	| 42658406	|
-| Tempo de execução| 771,59 s	| 356,57 s	| 653,99 s	| 727,49 s	| 146,37 s	| 42,66 s	|
+| Tempo de execução| 5.79 s |  2.67 s |  4.90 s |  5.46 s |  1.10 s |  0.32 s |
 
 
 ----------
@@ -250,7 +273,7 @@ Percebe-se que os resultados possuem uma média de erros de predição entre 0~1
 | Stalls por branch| 24.0% 	| 35.6%		| 68.7%		| 59.6%		| 51.1%		| 12.3%		|
 | Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
 | Total ciclos	   | 593165646	| 290450787	| 644583142	| 714029171	| 133131493	| 39470766	|
-| Tempo de execução| 593,17 s	| 290,45 s	| 644,58 s	| 714,03 s	| 133,13 s	| 39,47 s	|
+| Tempo de execução| 4.45 s |  2.18 s |  4.83 s |  5.36 s |  1.00 s |  0.30 s |
 
 
 ----------
@@ -277,7 +300,7 @@ Percebe-se que os resultados possuem uma média de erros de predição entre 0~1
 | Stalls por branch| 5.8%	| 0.3%		| 2.7%		| 2.4%		| 2.1%		| 3.2%		|
 | Stalls por dados | 0.03%	| 13.48%	| 16.94%	| 20.88%	| 15.21%		| 22.19%	|
 | Total ciclos	   | 550404352	| 254216016	| 624734764	| 694992963	| 119886193	| 39142780	|
-| Tempo de execução| 550,40 s	| 254,21 s	| 624,73 s	| 694,99 s	| 119,89 s	| 39,14 s	|
+| Tempo de execução| 4.13 s |  1.91 s |  4.69 s |  5.21 s |  0.90 s |  0.29 s |
 
 ##Referências
 [1] http://www.hardware.com.br/dicas/entendendo-cache.html 
