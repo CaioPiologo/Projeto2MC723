@@ -63,7 +63,7 @@ Para as simulações realizados no projeto, consideramos que hazard estrutural n
 
 
 #####Pipeline Escalar de 5 estágios
-Para o pipeline de 5 estágios hazards de WAW e WAR são resolvidos pelo fowarding ou não ocorrem, logo, o único hazard que devemos considerar é o RAW, normalmente são necessários dois stalls para resolvê-lo, no entanto devido ao fowarding um *stall* é suficiente.
+Para o pipeline de 5 estágios hazards de WAW e WAR não ocorrem, logo, o único hazard que devemos considerar é o RAW, que pode ser resolvido por *stalling* e *fowarding*. Normalmente são necessários dois stalls para resolvê-lo, no entanto devido ao fowarding um *stall* é suficiente.
 Para detectar o hazard, o **hazard detector** verifica se a instrução entre os estágios de **instruction decoding (ID)** e **execute (EX)** faz um acesso a memória e se o registrador onde o valor é armazenado vai ser lido entre  o estágio de **instruction fetch (IF)** e **ID**, se isto ocorre, uma bolha é inserida. O hazard detector foi implementado em [mips_isa_escalar.cpp](../data_hazard/mips_isa_escalar.cpp).
 
 Os resultados para os benchmarks estão apresentados a seguir:
