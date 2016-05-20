@@ -304,3 +304,4 @@ Para a parte final do projeto, fizemos a contagem total de ciclos de cada progra
 
 ##Referências
 [1] http://www.hardware.com.br/dicas/entendendo-cache.html 
+[2] David A. Patterson and John L. Hennessy. Computer Organization Design, The Hardware/Software Interface. Morgan Kaufmann
