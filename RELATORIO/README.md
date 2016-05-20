@@ -302,6 +302,47 @@ Para a parte final do projeto, fizemos a contagem total de ciclos de cada progra
 | Total ciclos	   | 550404352	| 254216016	| 624734764	| 694992963	| 119886193	| 39142780	|
 | Tempo de execução| 4.13 s |  1.91 s |  4.69 s |  5.21 s |  0.90 s |  0.29 s |
 
+
+----------
+
+
+####Configuração 7:
+
+ - Pipeline de 5 estágios
+ - Processador superescalar
+ - Tamanho L1 dados: 64KB
+ - Tamanho L1 instrução: 64KB
+ - Tamanho L2 unificada: 256KB
+ - Bloco L1 dados: 512B
+ - Bloco L1 instruções: 512B
+ - Bloco L2 unificada: 512B
+ - Branch prediction dinâmico
+
+| 		| Bitcount	| Dijkstra	| Rijndael(encode)| Rijndael(decode)| JPEG(encode)	|JPEG(decode)	|
+| :------------ |:------------: | :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
+| Total instruções | 536894310	| 223691867	| 453563104	| 483868969	| 111543858	| 35848023	|
+| Miss rate L1 dados| 0.00%	| 0.03%		| 18.12%	| 16.32%	| 0.75%		| 0.38%		|
+| Miss rate L1 instruções| 0.00%| 0.00%		| 0.36%		| 0.00%		| 0.00%		| 0.01%		|
+| Miss rate L2     | 61.60%	| 9.36%		| 56.74%	| 47.72%	| 57.98%		| 36.99%		|
+| Stalls por branch| 5.8%	| 0.3%		| 2.7%		| 2.4%		| 2.1%		| 3.2%		|
+| Stalls por dados |  0.03% | 13.69% | 17.81% | 22.55% | 16.95% | 28.53% |
+| Total ciclos	   | 566174465 | 294986265 | 677866867 | 771177677 | 148380007 | 50742793 |
+| Tempo de execução| 2.83s | 1.47s | 3.39s | 3.86s | 0.74s | 0.25s |
+
+###Análise de desempenho
+
+Fazendo uma comparação entre as configurações 1 e 2 vemos que aumentar o tamanho e bloco apenas da cache L1 pode afetar negativamente o miss rate na cache L2, para o programa **Rijndael**, o miss rate foi de 17% para 82%, dobrando o tempo de execução do programa. Nas configurações 1 e 3 a diferença é o tamanho e bloco da cache L2, o programa Rijndael novamente apresentou pior desempenho quando comparado com a configuração 1, o miss rate na L2 foi de 17% para 30%. Nestas duas comparações vemos a importância do equilíbrio entre as caches L1 e L2, apenas aumentar uma das duas não necessariamente significa melhorar o miss rate das caches, as caches devem crescer em tamanho e tamanho de bloco proporcionalmente para obter o melhor desempenho. Na configuração 4 as duas caches foram aumentadas e foi a configuração que mostrou melhor desempenho entre 1,2,3 e 4.
+
+Com a melhor configuração de cache partimos para a análise do *brach predictor*, na configuração 5 usamos um método  estático que sempre considera que o branch ocorreu, melhorando o desempenho do processador quando comparado com uma configuração sem *branch predictor*, mas ele apresenta desempenho inferior quando comparado com um método dinâmico (configuração 6), no caso do programa JPEG (encoding), os stalls causados por branch cairam de 51% para 2%, um grande aumento na performance. 
+
+Por fim, com a melhor configuração de processador escalar, foi feita uma comparação com um processador superescalar. A configuração 7 usou mais ciclos para processar os programas, isso devido ao aumento de stalls causados por hazards de dados. No entanto, o processador superescalar possui um clock 33% menor que o escalar e como o aumento de ciclos foi na ordem de 20%, houve uma melhora no desempenho do processador superescalar. Assim temos que a configuração 7 apresentou o melhor desempenho, executando os programas do benchmark com maior velocidade.
+
+
+##Conclusão
+
+Com este projeto vimos como as modificações na configuração vão se acumulando e melhorando o desempenho do processador. A ideia é que quando se melhora uma parte do processador, surge um gargalo em outro ponto, assim é necessário fazer uma nova modificação neste ponto para melhorar o desempenho. Este projeto foi uma versão simplificada dos processadores atuais, que passaram por centenas de modificações para atingir altos níveis de desempenho e há muitas outras modificações que podem ser analisadas (mudar estágios do processador). A análise do desempenho de um processador foi bem sucedida neste projeto.
+
+
 ##Referências
 [1] http://www.hardware.com.br/dicas/entendendo-cache.html 
 [2] David A. Patterson and John L. Hennessy. Computer Organization Design, The Hardware/Software Interface. Morgan Kaufmann
